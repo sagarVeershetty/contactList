@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Contact list</title>
+  <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>
+</head>
+
+<body>
+
+    <div class="global-wrapper" ng-app="myApp">
+
+  <!-- nav section -->
+  <nav class="navbar navbar-default" ng-controller="navCtrl">
+    <div class="container-fluid">
+      <div class="nav-header">
+        <a href="#" class="navbar-brand hidden-xs">Conatct List Demo</a>
+        <ul class="nav navbar-nav">
+          <li ng-repeat="navLink in nav.navItems" ng-class="{active : $index === nav.selectedIndex}">
+            <a class="text-center" ng-click="nav.navClick($index)" ng-href="#/{{navLink}}">{{navLink}}</a>
+          </li>
+        </ul>
+    	</div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row panel panel-primary" ng-controller="homeCtrl">
+      <div class="panel-heading">
+        <h2 class="panel-title">Contact list app</h2>
+      </div>
+
+
+      <!--     contact list   	 -->
+      <div class="col-xs-5 panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"> <h4>Contacts:</h4>
+            <input class="form-control" placeholder="Seach Your Contacts" type="text" ng-model="searchText">
+            <contact class="list-group-item" ng-repeat="contact in contacts | orderBy: 'firstName' | filter: searchText "></contact>
+          </li>
+        </ul>
+      </div>
+
+      <!--   ng-view below       -->
+      <div class="col-xs-7">
+        <div class="list-group panel-body">
+          <div ng-view></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <!--  html templates used by angular, usually in separate files -->
+    <script type="text/ng-template" id="default.html">
+      <div class="alert alert-success text-center" ng-class="{hidden : !removed}"> {{removed}}</div>
+      <div class="list-group-item text-center">Please select a contact to view</div>
+    </script>
+
+	  <!-- 	template for displaying a contacts info	 -->
+    <script type="text/ng-template" id="contact_info.html">
+      <div class="list-group-item">
+       <p>First Name:{{currentContact.firstName}}</p>
+        <p>Last Name:{{currentContact.lastName}}</p>
+        <p>Email: <a ng-href="{{currentContact.email}}">{{currentContact.email}}</a></p>
+        <p>Phone:{{currentContact.phone}}</p>
+        <p>Status:{{currentContact.status}}</p>
+        <a ng-href="#/edit/{{contacts.indexOf(currentContact)}}">
+          <button class="btn btn-default">
+            <span class="glyphicon glyphicon-pencil"></span><span> - Edit</span>
+          </button>
+        </a>
+
+        <a href="#/"><button class="btn btn-default" ng-click="removeContact(currentContact)">
+          <span class="glyphicon glyphicon-remove"></span><span> - Remove</span>
+        </button></a>
+      </div>
+    </script>
+
+<!--   template used for both adding a new contact and editing an existing contact   -->
+    <script type="text/ng-template" id="contact_form.html">
+      <div ng-controller="addContactCtrl">
+        <div class="list-group-item">
+
+          <div class="form-group">
+
+            <p><label for="name">First Name: </label> <input id="firstName" class="form-control" type="text" ng-model="currentContact.name"> </p>
+            <p><label for="lastName">Last Name:</label> <input id="lastName" class="form-control" type="text" ng-model="currentContact.lastName"> </p>
+            <p><label for="email">Email:</label> <input id="email" class="form-control" type="email" ng-model="currentContact.email"> </p>
+            <p><label for="phone">Phone:</label> <input id="phone" class="form-control" type="tel" ng-model="currentContact.phone"> </p>
+            <p><label for="status">Status: <label>Active<input type="radio"  value="inActive"  ng-model="currentContact.status"></label>
+               <label>In-Active <input type="radio" value="active"  ng-model="currentContact.status"></label></p>
+
+          </div>
+
+          <a ng-if="path === '/add' " ng-href="#/contact-info/{{ contacts.length - 1 }}" ng-click="addContact()">
+            <button class="btn btn-default">
+             <span class="glyphicon glyphicon-ok"></span>
+             <span> Add</span>
+            </button>
+          </a>
+
+          <a ng-if="path !== '/add'" ng-href="#/contact-info/{{index}}">
+            <button class="btn btn-default">
+             <span class="glyphicon glyphicon-ok"></span>
+             <span> Save Edits</span>
+            </button>
+          </a>
+
+          <a href="#/">
+            <button class="btn btn-default">
+              <span class="glyphicon glyphicon-remove"></span><span>  Cancel</span>
+            </button>
+          </a>
+        </div>
+      </div>
+    </script>
+
+<!--      template used for the ng-repeat in the contact list        -->
+    <script type="text/ng-template" id="contact.html">
+      <a ng-href="#/contact-info/{{contacts.indexOf(contact)}}">
+        {{contact.name}}
+      </a>
+    </script>
+  </div>
+  <script src='http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js'></script>
+  <script src='http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-route.min.js'></script>
+    <script  src="index.js"></script>
+
+</body>
+
+</html>
